@@ -1,5 +1,6 @@
 # Demonstrating 'all' and 'any' functions
 
+
 # all() returns True only if all values are True
 result = all([True, True, False])         # False: One value is False
 result = all([True, True, True])          # True: All values are True
