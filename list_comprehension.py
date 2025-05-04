@@ -1,18 +1,18 @@
-sayilar = []
+numbers = []
 
 for i in range(10):
-    sayilar.append(i * 3)
+    numbers.append(i * 3)
 
-print(sayilar)
+print(numbers)
 
-sayilar_2 = [i * 3 for i in range(10)]
+numbers_2 = [i * 3 for i in range(10)]
 
-print(sayilar_2)
+print(numbers_2)
 
-person = "Haydar Akyurek"
+person_name = "Haydar Akyurek"
 
-for i in person:
-    print(i.upper())
+for char in person_name:
+    print(char.upper())
 
-sonuc = [i.upper() for i in person]
-print(sonuc)
+result = [char.upper() for char in person_name]
+print(result)
