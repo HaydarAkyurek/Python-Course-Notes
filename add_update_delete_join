@@ -1,0 +1,66 @@
+import mysql.connector  # Import MySQL library
+
+try:
+    # Connect to the MySQL server and select database
+    db = mysql.connector.connect(
+        host="localhost",        # MySQL host
+        user="root",             # MySQL username
+        password="@12345",       # MySQL password
+        database="shopdb"        # Database to use
+    )
+
+    # Create a cursor to execute SQL queries
+    cursor = db.cursor()
+
+    # ✅ INSERT: Add a new product to the products table
+    """
+    insert_sql = "INSERT INTO products (name, categoryId) VALUES (%s, %s)"
+    values = ("Smartphone", 1)  # Example: name, categoryId
+    cursor.execute(insert_sql, values)
+    db.commit()
+    print("✅ New product inserted.")
+    """
+
+    # ✅ UPDATE: Change the name of a product
+    """
+    update_sql = "UPDATE products SET name = %s WHERE id = %s"
+    values = ("Updated Product", 1)  # New name, product ID
+    cursor.execute(update_sql, values)
+    db.commit()
+    print("✅ Product updated.")
+    """
+
+    # ✅ DELETE: Remove a product by ID
+    """
+    delete_sql = "DELETE FROM products WHERE id = %s"
+    value = (3,)  # Product ID to delete
+    cursor.execute(delete_sql, value)
+    db.commit()
+    print("✅ Product deleted.")
+    """
+
+    # ✅ SELECT with JOIN: Show all products and their categories
+    join_sql = """
+    SELECT products.name, categories.Tür 
+    FROM products 
+    INNER JOIN categories 
+        ON products.categoryId = categories.idcategories
+    """
+    cursor.execute(join_sql)
+    results = cursor.fetchall()
+
+    # Print each product and its category
+    print("\n📦 Product List with Categories:")
+    for row in results:
+        print(f"Product: {row[0]} | Category: {row[1]}")
+
+except mysql.connector.Error as err:
+    # Handle connection or query errors
+    print(f"❌ MySQL Error: {err}")
+
+finally:
+    # Close cursor and connection properly
+    if 'cursor' in locals():
+        cursor.close()
+    if 'db' in locals() and db.is_connected():
+        db.close()
