@@ -1,0 +1,43 @@
+# This script sends an SMS message using the Vonage API (formerly Nexmo).
+# You need a valid Vonage account, API key, and secret.
+# Replace <key>, <secret>, and <phone> with your actual credentials and recipient's number.
+# The message will be sent from the "from" name you define.
+# The script includes error handling and prints whether the message was sent successfully.
+#  Make sure to replace:
+#  "<your_api_key>" and "<your_api_secret>" with your Vonage API credentials
+#  "<recipient_phone_number>" with a valid number (e.g. "905xxxxxxxxx" for Turkey)
+
+import vonage
+
+# Initialize the Vonage client with your API credentials
+api_key = "<your_api_key>"       # Replace with your actual Vonage API key
+api_secret = "<your_api_secret>" # Replace with your actual Vonage API secret
+client = vonage.Client(key=api_key, secret=api_secret)
+
+# Create an SMS object from the Vonage client
+sms = vonage.Sms(client)
+
+# Define SMS parameters
+sender = "PythonApp"  # The name that will appear as the sender (up to 11 alphanumeric chars)
+recipient = "<recipient_phone_number>"  # The recipient's phone number (e.g., "905xxxxxxxxx")
+message_text = "This SMS was sent from my Python application."
+
+# Attempt to send the message
+try:
+    responseData = sms.send_message({
+        "from": sender,
+        "to": recipient,
+        "text": message_text
+    })
+
+    # Check if the message was successfully sent (status "0" means success)
+    if responseData["messages"][0]["status"] == "0":
+        print("✅ Message sent successfully!")
+    else:
+        # Print the error text returned by Vonage
+        error_text = responseData["messages"][0].get("error-text", "Unknown error")
+        print(f"❌ Message failed to send. Error: {error_text}")
+
+except Exception as e:
+    # Catch and print any exception that may occur (e.g., connection errors)
+    print("❗ An exception occurred while sending the message:", str(e))
