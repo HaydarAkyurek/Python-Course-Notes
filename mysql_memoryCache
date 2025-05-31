@@ -1,0 +1,62 @@
+import mysql.connector  # MySQL library
+import time  # Used to simulate delay (optional)
+
+# Simple memory cache (dictionary based)
+query_cache = {}  # Key: SQL string, Value: query result
+
+def run_cached_query(cursor, sql):
+    """Runs a SQL query using memory cache if available."""
+    
+    if sql in query_cache:
+        print("⚡ Using cached result.")
+        return query_cache[sql]  # Return from cache
+
+    print("🐢 Running query from database...")
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    # Store result in cache
+    query_cache[sql] = result
+    return result
+
+try:
+    # Connect to MySQL
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="@12345",
+        database="shopdb"
+    )
+
+    cursor = db.cursor()
+
+    # SQL query to get products and categories
+    join_sql = """
+    SELECT products.name, categories.Tür 
+    FROM products 
+    INNER JOIN categories 
+        ON products.categoryId = categories.idcategories
+    """
+
+    # First query (from DB)
+    result1 = run_cached_query(cursor, join_sql)
+    for row in result1:
+        print(f"Product: {row[0]} | Category: {row[1]}")
+    
+    print("\n🔁 Running same query again...\n")
+    time.sleep(1)  # Just to simulate delay (optional)
+
+    # Second query (should use cache)
+    result2 = run_cached_query(cursor, join_sql)
+    for row in result2:
+        print(f"(CACHED) Product: {row[0]} | Category: {row[1]}")
+
+except mysql.connector.Error as err:
+    print(f"❌ MySQL Error: {err}")
+
+finally:
+    # Cleanup
+    if 'cursor' in locals():
+        cursor.close()
+    if 'db' in locals() and db.is_connected():
+        db.close()
